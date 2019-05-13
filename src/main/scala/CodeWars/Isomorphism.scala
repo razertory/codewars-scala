@@ -1,4 +1,4 @@
-package FunctionalProgramming
+package CodeWars
 
 object Isomorphism {
   /**
