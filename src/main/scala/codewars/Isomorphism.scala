@@ -1,5 +1,6 @@
 package codewars
 
+// https://www.codewars.com/kata/isomorphism/scala
 object Isomorphism {
   /**
   * The type [[Nothing]] has no value.
