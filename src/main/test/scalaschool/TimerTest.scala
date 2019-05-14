@@ -1,3 +1,5 @@
+package scalaschool
+
 import org.scalatest.FunSuite
 
 class TimerTest extends FunSuite {

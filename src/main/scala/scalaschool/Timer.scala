@@ -1,3 +1,5 @@
+package scalaschool
+
 object Timer {
   var count = 0
 
