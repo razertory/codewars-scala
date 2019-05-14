@@ -1,4 +1,4 @@
-package CodeWars
+package codewars
 
 object Isomorphism {
   /**
@@ -37,25 +37,70 @@ object Isomorphism {
   def refl[A]: ISO[A, A] = (identity, identity)
 
   // isomorphism is symmetric
-  def symm[A, B]: ISO[A, B] => ISO[B, A] = (_._2, _._1)
+  def symm[A, B]: ISO[A, B] => ISO[B, A] = {
+    case (ab, ba) => (ba, ab)
+  }
 
   // isomorphism is transitive
-  def trans[A, B, C]: (ISO[A, B], ISO[B, C]) => ISO[A, C] = (_._1, _._2)
+  def trans[A, B, C]: (ISO[A, B], ISO[B, C]) => ISO[A, C] = {
+    case ((ab, ba), (bc, cb)) => (bc compose ab, ba compose cb)
+  }
 
   // We can combine isomorphism:
   def isoTuple[A, B, C, D]: (ISO[A, B], ISO[C, D]) => ISO[(A, C), (B, D)] = {
     case ((ab, ba), (cd, dc)) => {
-      (a, c) => (ab(a), cd(c)), ???
+      ({ case (a, c) => (ab(a), cd(c)) }, { case (b, d) => (ba(b), dc(d)) })
     }
   }
 
-  def isoList[A, B]: ISO[A, B] => ISO[List[A], List[B]] = ???
-  def isoOption[A, B]: ISO[A, B] => ISO[Option[A], Option[B]] = ???
-  def isoEither[A, B, C, D]: (ISO[A, B], ISO[C, D]) => ISO[Either[A, C], Either[B, D]] = ???
-  def isoFunc[A, B, C, D]: (ISO[A, B], ISO[C, D]) => ISO[(A => C), (B => D)] = ???
+  def isoList[A, B]: ISO[A, B] => ISO[List[A], List[B]] = {
+    case (ab, ba) => {
+      (listA => listA.map(ab), listB => listB.map(ba))
+    }
+  }
+
+  def isoOption[A, B]: ISO[A, B] => ISO[Option[A], Option[B]] = {
+    case (ab, ba) => {
+      (OpA => OpA.map(ab), OpB => OpB.map(ba))
+    }
+  }
+
+  def isoEither[A, B, C, D]: (ISO[A, B], ISO[C, D]) => ISO[Either[A, C], Either[B, D]] = {
+    case ((ab, ba), (cd, dc)) => {
+      (
+        {
+          case Left(a) => Left(ab(a))
+          case Right(c) => Right(cd(c))
+        },
+        {
+          case Left(b) => Left(ba(b))
+          case Right(d) => Right(dc(d))
+        } 
+      )
+    }
+  }
+
+  def isoFunc[A, B, C, D]: (ISO[A, B], ISO[C, D]) => ISO[(A => C), (B => D)] = {
+    case ((ab, ba), (cd, dc)) => {
+      (ac => cd compose ac compose ba, bd => dc compose bd compose ab)
+    }
+  }
 
   // Going another way is hard (and is generally impossible)
-  def isoUnOption[A, B]: ISO[Option[A], Option[B]] => ISO[A, B] = ???
+  def isoUnOption[A, B]: ISO[Option[A], Option[B]] => ISO[A, B] = {
+    case (opAopB, opBopA) => {
+      (
+        a => opAopB(Some(a)) match {
+          case Some(b) => b
+          case None => (opAopB(None)).get
+        },
+        b => opBopA(Some(b)) match {
+          case Some(a) => a
+          case None => (opBopA(None)).get
+        }
+      )
+    }
+  }
   // Remember, for all valid ISO, converting and converting back
   // Is the same as the original value.
   // You need this to prove some case are impossible.
@@ -63,7 +108,19 @@ object Isomorphism {
   // We cannot have
   // isoUnEither[A, B, C, D]: (ISO[Either[A, B], Either[C, D]], ISO[A, C]) => ISO[B, D]
   // Note that we have
-  def isoEU: ISO[Either[List[Unit], Unit], Either[List[Unit], Nothing]] = ???
+  def isoEU: ISO[Either[List[Unit], Unit], Either[List[Unit], Nothing]] = {
+    (
+      {
+        case Left(xs) => Left(Unit :: xs)
+        case _ => Left(Nil)
+      },
+      {
+        case Left(Nil) => Right(Unit)
+        case Left(_ :: xs) => Left(xs)
+        case Right(void) => absurd(void)
+      }
+    )
+  }
   // where Unit, has 1 value, (the value is also called Unit), and Void has 0 values.
   // If we have isoUnEither,
   // We have ISO[Unit, Nothing] by calling isoUnEither isoEU
@@ -71,5 +128,6 @@ object Isomorphism {
   // So it is impossible to have isoUnEither
 
   // And we have isomorphism on isomorphism!
-  def isoSymm[A, B]: ISO[ISO[A, B], ISO[B, A]] = ???
+  def isoSymm[A, B]: ISO[ISO[A, B], ISO[B, A]] = (symm, symm)
 }
+
