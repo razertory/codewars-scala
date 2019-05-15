@@ -19,7 +19,7 @@ object Basic {
   }
   var add2 = adder(2, _:Int)
 
-  // 柯里化
+  // 柯里化..
   def multiply(m: Int)(n: Int): Int = m * n
   var timesTwo = multiply(2) _
 
