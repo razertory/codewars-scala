@@ -112,7 +112,7 @@ object Isomorphism {
   def isoEU: ISO[Either[List[Unit], Unit], Either[List[Unit], Nothing]] = {
     (
       {
-        case Left(xs) => Left(Unit :: xs)
+        case Left(xs) => Left(() :: xs)
         case _ => Left(Nil)
       },
       {
