@@ -43,14 +43,13 @@ object Basic {
     val shineRefraction = 12
   }
 
-  // 类型
+  // 类型, 简单的 hashmap
   trait Cache[K, V] {
     def get(key: K): V
     def put(key: K, value: V)
     def delete(key: K)
   }
 
-  // 简单的 hashmap
   class CacheServer extends Cache [String, String]{
     var arr :Array[String] = new Array[String](100)
 
