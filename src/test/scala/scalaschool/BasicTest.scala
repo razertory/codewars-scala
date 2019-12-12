@@ -43,4 +43,8 @@ class BasicTest extends FunSuite {
     assert(cacheServer.get("hate") == null)
   }
 
+  test("parallel") {
+    Basic.parallelSum
+  }
+
 }

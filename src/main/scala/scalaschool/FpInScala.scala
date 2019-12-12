@@ -2,7 +2,6 @@ package scalaschool
 
 import scala.annotation.tailrec
 
-
 object FpInScala {
   // 阶乘
   def factorial(x: Int): Int = {
@@ -85,12 +84,12 @@ object FpInScala {
   def filter[A](l: List[A], f: A => Boolean): List[A] = {
     l match {
       case Nil => Nil
-      case x :: xs if f(x) => filter(xs, f)
-      case _ => l
+      case x :: xs if f(x) => x :: filter(xs, f)
+      case x :: xs => filter(xs, f)
     }
   }
 
-  // l 是否包含一个子序列为 m
+  // l 是否包含一个子序列为 m TODO: add a pure function solution
   def hasSubSequence[A](l: List[A], m: List[A]): Boolean = {
     true
   }
