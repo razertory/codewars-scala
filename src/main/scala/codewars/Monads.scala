@@ -24,11 +24,9 @@ object Monads {
 
   object Maybe {
     var maybeFunctor = new Functor[Maybe] {
-      def fmap[A, B]: (A => B) => Maybe[A] => Maybe[B] = f => fa => {
-        fa match {
-          case Some(a) => Some(f(a)) 
-          case None => None
-        }
+      def fmap[A, B]: (A => B) => Maybe[A] => Maybe[B] = f => {
+        case Some(a) => Some(f(a))
+        case None => None
       }
     }
 
