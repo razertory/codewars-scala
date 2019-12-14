@@ -71,7 +71,7 @@ object Basic {
 
   def parallelSum = {
     var now = System.currentTimeMillis()
-    val list = (1 to 100000).toList
+    val list = (1 to 1000000).toList
     list.filter(i => i % 2 == 1).sum
     println(System.currentTimeMillis() - now)
 

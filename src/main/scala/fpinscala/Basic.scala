@@ -1,8 +1,8 @@
-package scalaschool
+package fpinscala
 
 import scala.annotation.tailrec
 
-object FpInScala {
+object Basic {
   // 阶乘
   def factorial(x: Int): Int = {
     @tailrec
@@ -36,7 +36,7 @@ object FpInScala {
     x => f(g(x))
   }
 
-  // 实现库函数 drop
+  // 实现 drop, 不考虑 n 负数
   def drop[A](l: List[A], n: Int): List[A] = {
     (l, n) match {
       case (Nil, _) => l
@@ -85,12 +85,29 @@ object FpInScala {
     l match {
       case Nil => Nil
       case x :: xs if f(x) => x :: filter(xs, f)
-      case x :: xs => filter(xs, f)
+      case _ :: xs => filter(xs, f)
     }
   }
 
   // l 是否包含一个子序列为 m TODO: add a pure function solution
   def hasSubSequence[A](l: List[A], m: List[A]): Boolean = {
     true
+  }
+
+  // 使用一个二元组来组合两个 Option 值。如果两个 Option 都为 None，也返回 None
+  //def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = {}
+
+  // 使用 Option 处理异常
+  // 每一个有效的输出都包装在 Some 类型里，无效的输入映射为 None，
+  // 编译器可以强制调用者显式处理失败的可能性
+  def mean(l: Seq[Double]): Option[Double] = {
+    if (l.isEmpty) None
+    else Some(l.sum / l.length)
+  }
+
+  // 通过 lazy 缓存执行结果
+  def maybeTwice2(b: Boolean, i: => Int) = {
+    lazy val j = i
+    if(b) j + j else 0
   }
 }
