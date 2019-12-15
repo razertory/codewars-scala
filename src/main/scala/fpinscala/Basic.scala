@@ -110,4 +110,16 @@ object Basic {
     lazy val j = i
     if(b) j + j else 0
   }
+
+  case class TreeNode[T](value: T, left: TreeNode[T], right: TreeNode[T])
+
+  // 二叉树的深度
+  def treeDepth[T](root: TreeNode[T]): Int = {
+    def depth[_](root: TreeNode[T], d: Int): Int = {
+      if (root == null) d
+      else depth(root.left, d + 1).max(depth(root.right, d + 1))
+    }
+    depth(root, 0)
+  }
+
 }

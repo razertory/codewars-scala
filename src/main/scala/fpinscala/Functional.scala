@@ -50,7 +50,7 @@ object Functional {
     }
 
     // F[A, B] 是一个 Functor
-    def distribute[A, B](fab: F[(A, B)]): (F[A], F[B]) = {}
+    def distribute[A, B](fab: F[(A, B)]): (F[A], F[B]) = ???
   }
 
   def map[A, B](oa: Option[A])(f: A => B): Option[A] = ???
