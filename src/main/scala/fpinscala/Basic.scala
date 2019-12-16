@@ -89,13 +89,30 @@ object Basic {
     }
   }
 
-  // l 是否包含一个子序列为 m TODO: add a pure function solution
+  // l 是否包含一个子序列为 m
   def hasSubSequence[A](l: List[A], m: List[A]): Boolean = {
-    true
+    (l, m) match {
+      case (Nil, ys) => Nil == ys
+      case (_, Nil) => true
+      case (x :: xs, y :: ys) => {
+        if (x == y && hasSubSequence(xs, ys)) true
+        else hasSubSequence(xs, y :: ys)
+      }
+    }
   }
 
   // 使用一个二元组来组合两个 Option 值。如果两个 Option 都为 None，也返回 None
-  //def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = {}
+  def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = {
+    (a, b) match {
+      case (None, None) => None
+      case _ => Some(f(a, b))
+    }
+  }
+
+  // 实现方差
+  def vaiance(xs: Seq[Double]): Option[Double] = {
+    mean(xs).flatMap(m => mean(xs.map(x => math.pow(x - m, 2))))
+  }
 
   // 使用 Option 处理异常
   // 每一个有效的输出都包装在 Some 类型里，无效的输入映射为 None，
@@ -122,4 +139,36 @@ object Basic {
     depth(root, 0)
   }
 
+  // Option 是一个最多只包含一个元素的 List
+  // Option 本身自带 flatMap 方法
+  def sequence[A](l: List[Option[A]]): Option[List[A]] = {
+    l match {
+      case Nil => None
+      case x :: xs => x.flatMap(h => sequence(xs).map(h :: _))
+    }
+  }
+
+  // 相较于 Option，Either 可以让使用者更清楚知道错误发生的信息
+  case class Left[+E](get: E) extends Either[E,Nothing]
+  case class Right[+A](get: A) extends Either[Nothing,A]
+  sealed trait Either[+E,+A] {
+    def map[B](f: A => B): Either[E, B] =
+      this match {
+        case Right(a) => Right(f(a))
+        case Left(e) => Left(e)
+      }
+
+    def flatMap[EE >: E, B](f: A => Either[EE, B]): Either[EE, B] =
+      this match {
+        case Left(e) => Left(e)
+        case Right(a) => f(a)
+      }
+    def orElse[EE >: E, AA >: A](b: => Either[EE, AA]): Either[EE, AA] =
+      this match {
+        case Left(_) => b
+        case Right(a) => Right(a)
+      }
+    def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C):
+    Either[EE, C] = for { a <- this; b1 <- b } yield f(a,b1)
+  }
 }
