@@ -103,7 +103,10 @@ object Basic {
 
   // 使用一个二元组来组合两个 Option 值。如果两个 Option 都为 None，也返回 None
   def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = {
-    a.flatMap (aa => b.map(bb => f(aa, bb)))
+    (a, b) match {
+      case (Some(x), Some(y)) => Some(f(x, y))
+      case _ => None
+    }
   }
 
   // 实现方差
