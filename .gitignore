@@ -4,3 +4,4 @@ target
 project
 scala-code-lab.iml
 .idea
+.metals
