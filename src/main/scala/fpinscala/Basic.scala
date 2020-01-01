@@ -8,9 +8,8 @@ object Basic {
     @tailrec
     def go (x: Int, acc: Int): Int = {
       if (x <= 0) acc
-      else go (x - 1, x * acc)
+     else go (x - 1, x * acc)
     }
-
     go(x, 1)
   }
 
@@ -169,6 +168,6 @@ object Basic {
         case Right(a) => Right(a)
       }
     def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C):
-    Either[EE, C] = for { a <- this; b1 <- b } yield f(a,b1)
+      Either[EE, C] = for { a <- this; b1 <- b } yield f(a,b1)
   }
 }

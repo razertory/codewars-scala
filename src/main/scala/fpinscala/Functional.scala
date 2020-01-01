@@ -1,7 +1,7 @@
 package fpinscala
 
 object Functional {
-  // Monoid 幺半群由三个元素构成
+  // Monoid(幺半群) 由三个元素构成
   // 1. 一个类型 A
   // 2. 符合结合律的二元操作 op。例如，对于 x: A, y: A, z: A
   //    op(op(x, y), z) 和 op(x, op(y, z)) 是等价的。意思是在 Scala 中 op(op(x, y), z) == op(x, op(y, z))
@@ -12,7 +12,7 @@ object Functional {
   //    对于数组拼接操作，单位元就是空数组 Nil
   // 简化一下就是，Monoid 是一个类型，一个该类型满足结合律的二元操作和一个该类型的单位元素
   // 再简化就是，Monoid 是一个类型和一个类型的实现法则
-  // 在 Scala 中 Monid 可以用一个 trait 表示
+  // 在 Scala 中 Monoid 可以用一个 trait 表示
   trait Monoid[A] {
     def op(a1: A, b2: A): A
     def zero: A
@@ -31,14 +31,13 @@ object Functional {
     override def op(a1: List[A], b2: List[A]): List[A] = {
       a1 ++ b2
     }
-
     override def zero: List[A] = Nil
   }
 
   // 自函数 monoid
   def endoMonoid[A]: Monoid[A => A] = new Monoid[A => A] {
     override def op(a1: A => A, b2: A => A): A => A = {
-      a1 compose b2
+      a1.compose(b2)
     }
     override def zero: A => A = A => A
   }
@@ -66,9 +65,10 @@ object Functional {
   }
 
   /**
-  * Monoid 本身还可以泛化，意思是: a, b 如果都是 monoid，那么 Tuple a, b 也是 monoid
-  * 这个 monoid 的泛化行为成为 product。只要包含的元素是 monoid，有些数据结构就能构建成 monoid
-  */
+   * 泛化 Monoid
+   * Monoid 本身还可以泛化，意思是: a, b 如果都是 monoid，那么 Tuple a, b 也是 monoid
+   * 这个 monoid 的泛化行为成为 product。只要包含的元素是 monoid，有些数据结构就能构建成 monoid
+   */
   def productMonoid[A, B](A: Monoid[A], B: Monoid[B]): Monoid[(A, B)] = {
     new Monoid[(A, B)] {
       def op(a1: (A, B), b2: (A, B)) = {
@@ -76,7 +76,6 @@ object Functional {
       }
       val zero = (A.zero, B.zero)
     }
-
   }
 
 
@@ -99,7 +98,7 @@ object Functional {
 
    def unit[A](a: _ => A): F[A]
 
-   def flatMap[A, B](fa: F[A])(f: A => F[B]): F[B]
+   def flatMap[A, B](fa: F[A])(f: A => F[B]):F[B]
 
    def map[A, B](fa: F[A])(f: A => B): F[B] = {
      flatMap(fa)(_ => unit(f))
@@ -107,14 +106,15 @@ object Functional {
 
    def map2[A, B, C](fa: F[A], fb: F[B])(f: (A, B) => C): F[C] = {
      flatMap(fa)(a => map(fb)(b => f(a, b)))
- }
+   }
 
-   def filterM[A](ms: List[A])(f: A => F[Boolean]): F[List[A]] =
+   def filterM[A](ms: List[A])(f: A => F[Boolean]): F[List[A]] = {
      ms match {
        case Nil => unit(Nil)
        case h :: t => flatMap(f(h))(b =>
          if (!b) filterM(t)(f)
          else map(filterM(t)(f))(h :: _))
      }
+   }
   }
 }
