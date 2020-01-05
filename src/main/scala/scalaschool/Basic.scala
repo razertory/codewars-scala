@@ -79,4 +79,20 @@ object Basic {
     list.par.filter(i => i % 2 == 1).sum
     println(System.currentTimeMillis() - now)
   }
+
+  // 纯 FP 的快速排序
+  def quickSort(l :List[Integer]): List[Integer] = {
+    l match {
+      case Nil => Nil
+      case x :: xs => {
+        val smaller = quickSort(for(
+          n <- xs if n < x
+        ) yield n)
+        val bigger = quickSort(for(
+          n <- xs if n >= x
+        ) yield n)
+        smaller ++ List(x) ++ bigger
+      }
+    }
+  }
 }
