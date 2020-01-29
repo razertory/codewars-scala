@@ -3,7 +3,6 @@ package fpinscala
 import java.util.concurrent._
 import language.implicitConversions
 
-
 object Par {
   type Par[A] = ExecutorService => Future[A]
 

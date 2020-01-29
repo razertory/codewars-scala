@@ -2,7 +2,6 @@ package scalaschool
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 object Concurrent {
 
   implicit val ec = ExecutionContext.global

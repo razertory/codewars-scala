@@ -70,14 +70,14 @@ object Basic {
   }
 
   def parallelSum = {
-    var now = System.currentTimeMillis()
+    var now = System.nanoTime()
     val list = (1 to 1000000).toList
     list.filter(i => i % 2 == 1).sum
-    println(System.currentTimeMillis() - now)
+    println(System.nanoTime() - now)
 
-    now = System.currentTimeMillis()
+    now = System.nanoTime()
     list.par.filter(i => i % 2 == 1).sum
-    println(System.currentTimeMillis() - now)
+    println(System.nanoTime() - now)
   }
 
   // 纯 FP 的快速排序
