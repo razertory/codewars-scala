@@ -1,6 +1,6 @@
 package fpinscala
 
-object Functional {
+object Algebra {
   /**
    Monoid(幺半群) 由三个元素构成
    1. 一个类型 A
