@@ -18,6 +18,16 @@ object Algebra {
   trait Monoid[A] {
     def op(a1: A, b2: A): A
     def zero: A
+    def associativeLaw(x: A, y: A, z: A): Boolean = {
+      op(op(x, y), z) == op(x, op(y, z))
+    }
+    def identityLaw(x: A): Boolean = {
+      op(x, zero) == x && op(zero, x) == x
+    }
+
+    def isMonoid(x: A, y: A, z: A): Boolean = {
+      associativeLaw(x, y, z) && identityLaw(x)
+    }
   }
 
   // 组合字符串的 monoid

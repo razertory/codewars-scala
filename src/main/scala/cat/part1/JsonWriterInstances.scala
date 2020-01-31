@@ -1,6 +1,5 @@
 package cat.part1
 
-
 sealed trait Json
 
 final case class JsObject(get: Map[String, Json]) extends Json

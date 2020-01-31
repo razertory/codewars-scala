@@ -6,6 +6,7 @@ class JsonWriterInstancesTest extends FlatSpec with Matchers {
   import JsonWriterInstances._
 
   val person = Person("razertory", "razertory@163.com")
+  val personStr = "A string!"
 
   val expect = JsObject(
     Map(
@@ -14,8 +15,12 @@ class JsonWriterInstancesTest extends FlatSpec with Matchers {
     )
   )
 
-  "ToJson" should("return JsonObject") in {
+  "ObjectToJson" should("return JsonObject") in {
     Json.toJson(person).shouldBe(expect)
     person.toJson.shouldBe(expect)
+  }
+
+  "StringToJson" should("return JsonObject") in {
+    println(Json.toJson(personStr))
   }
 }
