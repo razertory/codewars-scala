@@ -1,6 +1,8 @@
 package scalaschool
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.duration._
+import scala.util.Random
 
 object Concurrent {
 
@@ -40,5 +42,28 @@ object Concurrent {
       a + b + c
     }
     sum.onComplete(x => println("sum is" + x))
+  }
+
+  def referentTransparent: ((Int, Int), (Int, Int)) = {
+    val future1 = {
+      val r = new Random(0L)
+      val x = Future(r.nextInt)
+      for {
+        a <- x
+        b <- x
+      } yield (a, b)
+    }
+
+    val future2 = {
+      val r = new Random(0L)
+      for {
+        a <- Future(r.nextInt())
+        b <- Future(r.nextInt())
+      } yield (a, b)
+    }
+
+    val r1 = Await.result(future1, 1.seconds)
+    val r2 = Await.result(future2, 1.seconds)
+    (r1, r2)
   }
 }

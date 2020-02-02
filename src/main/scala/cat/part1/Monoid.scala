@@ -1,5 +1,4 @@
-package cat.part2
-
+package cat.part1
 
 trait Semigroup[A] {
   def combine(x: A, y: A): A

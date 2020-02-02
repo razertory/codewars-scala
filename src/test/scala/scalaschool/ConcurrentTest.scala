@@ -16,4 +16,10 @@ class ConcurrentTest extends FunSuite {
     Concurrent.getResultParallel
   }
 
+  test("testReferentTransparent") {
+    val (a, b) = Concurrent.referentTransparent
+    assert(a._1 == a._2)
+    assert(b._1 != b._2)
+  }
+
 }
