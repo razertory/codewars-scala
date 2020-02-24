@@ -17,15 +17,18 @@ object Basic {
   def adder(m: Int, n: Int): Int = {
     m + n
   }
-  var add2 = adder(2, _:Int)
+
+  var add2 = adder(2, _: Int)
 
   // 柯里化..
   def multiply(m: Int)(n: Int): Int = m * n
+
   var timesTwo = multiply(2) _
 
   // 类
   class Calculator {
     val brand: String = "HP"
+
     def add(m: Int, n: Int): Int = m + n
   }
 
@@ -46,25 +49,27 @@ object Basic {
   // 类型, 简单的 hashmap
   trait Cache[K, V] {
     def get(key: K): V
+
     def put(key: K, value: V)
+
     def delete(key: K)
   }
 
-  class CacheServer extends Cache [String, String]{
-    var arr :Array[String] = new Array[String](100)
+  class CacheServer extends Cache[String, String] {
+    var arr: Array[String] = new Array[String](100)
 
     def get(key: String): String = {
-      val index :Int = key.hashCode() % 100
+      val index: Int = key.hashCode() % 100
       this.arr(index)
     }
 
     def put(key: String, value: String) = {
-      val index :Int = key.hashCode() % 100
+      val index: Int = key.hashCode() % 100
       this.arr(index) = value
     }
 
     def delete(key: String) = {
-      val index :Int = key.hashCode() % 100
+      val index: Int = key.hashCode() % 100
       this.arr(index) = null
     }
   }
@@ -81,14 +86,14 @@ object Basic {
   }
 
   // 纯 FP 的快速排序
-  def quickSort(l :List[Integer]): List[Integer] = {
+  def quickSort(l: List[Integer]): List[Integer] = {
     l match {
       case Nil => Nil
       case x :: xs => {
-        val smaller = quickSort(for(
+        val smaller = quickSort(for (
           n <- xs if n < x
         ) yield n)
-        val bigger = quickSort(for(
+        val bigger = quickSort(for (
           n <- xs if n >= x
         ) yield n)
         smaller ++ List(x) ++ bigger

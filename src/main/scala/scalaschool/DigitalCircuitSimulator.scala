@@ -1,16 +1,39 @@
 package scalaschool
 
+import scalaschool.DigitalCircuitSimulator.{afterDelay, agenda, currentTime}
+
 trait Simulation {
   type Action = (() => Unit)
+
   case class Event(time: Int, action: Action)
+
   type Agenda = List[Event]
   var agenda: Agenda = List[Event]()
   var currentTime = 0
+
+  def run(): Unit = {
+    afterDelay(0) {
+      println("*** Simulation started, time = " + currentTime + " ***")
+    }
+    loop()
+  }
+
+  private def loop(): Unit = agenda match {
+    case first :: rest =>
+      agenda = rest
+      currentTime = first.time
+      first.action()
+      loop()
+    case Nil =>
+  }
+
 }
 
 trait Parameters {
   def InverterDelay = 2
+
   def AndGateDelay = 3
+
   def OrGateDelay = 5
 }
 
@@ -51,8 +74,11 @@ object DigitalCircuitSimulator extends Simulation with Parameters {
     def andAction(): Unit = {
       val in1Sig = in1.getSignal
       val in2sig = in2.getSignal
-      afterDelay(AndGateDelay) { output setSignal (in1Sig & in2sig) }
+      afterDelay(AndGateDelay) {
+        output setSignal (in1Sig & in2sig)
+      }
     }
+
     in1 addAction andAction
     in2 addAction andAction
   }
@@ -61,8 +87,11 @@ object DigitalCircuitSimulator extends Simulation with Parameters {
     def orAction(): Unit = {
       val in1Sig = in1.getSignal
       val in2sig = in2.getSignal
-      afterDelay(OrGateDelay) { output setSignal (in1Sig | in2sig) }
+      afterDelay(OrGateDelay) {
+        output setSignal (in1Sig | in2sig)
+      }
     }
+
     in1 addAction orAction
     in2 addAction orAction
   }
@@ -90,28 +119,13 @@ object DigitalCircuitSimulator extends Simulation with Parameters {
     def probeAction(): Unit = {
       println(s"$name $currentTime value = ${wire.getSignal}")
     }
+
     wire addAction probeAction
   }
 
   def afterDelay(delay: Int)(block: => Unit): Unit = {
     val item = Event(currentTime + delay, () => block)
     agenda = insert(agenda, item)
-  }
-
-  private def loop(): Unit = agenda match {
-    case first :: rest =>
-      agenda = rest
-      currentTime = first.time
-      first.action()
-      loop()
-    case Nil =>
-  }
-
-  def run(): Unit = {
-    afterDelay(0) {
-      println("*** Simulation started, time = " +currentTime+" ***")
-    }
-    loop()
   }
 
   private def insert(ag: List[Event], item: Event): List[Event] = ag match {

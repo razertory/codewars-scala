@@ -22,7 +22,7 @@ class BasicTest extends FunSuite {
 
   test("testBasicClass") {
     val calc = new Calculator
-    assert(calc.add(1,1) == 2)
+    assert(calc.add(1, 1) == 2)
   }
 
   test("testBasicTrait") {

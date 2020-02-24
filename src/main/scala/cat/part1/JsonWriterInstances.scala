@@ -43,5 +43,6 @@ object JsonWriterInstances {
       w.write(value)
     }
   }
+
 }
 

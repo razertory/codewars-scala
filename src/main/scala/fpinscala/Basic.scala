@@ -6,10 +6,11 @@ object Basic {
   // 阶乘
   def factorial(x: Int): Int = {
     @tailrec
-    def go (x: Int, acc: Int): Int = {
+    def go(x: Int, acc: Int): Int = {
       if (x <= 0) acc
-     else go (x - 1, x * acc)
+      else go(x - 1, x * acc)
     }
+
     go(x, 1)
   }
 
@@ -22,8 +23,8 @@ object Basic {
 
   // array 数组
   // ordered 比较大小
-  def isSorted[T](array: List[T], ordered: (T, T) => Boolean): Boolean =  {
-    array match{
+  def isSorted[T](array: List[T], ordered: (T, T) => Boolean): Boolean = {
+    array match {
       case Nil => true
       case x :: Nil => true
       case x :: xs => ordered(x, xs.head) && isSorted(xs, ordered)
@@ -124,7 +125,7 @@ object Basic {
   // 通过 lazy 缓存执行结果
   def maybeTwice2(b: Boolean, i: => Int) = {
     lazy val j = i
-    if(b) j + j else 0
+    if (b) j + j else 0
   }
 
   case class TreeNode[T](value: T, left: TreeNode[T], right: TreeNode[T])
@@ -135,6 +136,7 @@ object Basic {
       if (root == null) d
       else depth(root.left, d + 1).max(depth(root.right, d + 1))
     }
+
     depth(root, 0)
   }
 
@@ -148,9 +150,11 @@ object Basic {
   }
 
   // 相较于 Option，Either 可以让使用者更清楚知道错误发生的信息
-  case class Left[+E](get: E) extends Either[E,Nothing]
-  case class Right[+A](get: A) extends Either[Nothing,A]
-  sealed trait Either[+E,+A] {
+  case class Left[+E](get: E) extends Either[E, Nothing]
+
+  case class Right[+A](get: A) extends Either[Nothing, A]
+
+  sealed trait Either[+E, +A] {
     def map[B](f: A => B): Either[E, B] =
       this match {
         case Right(a) => Right(f(a))
@@ -162,12 +166,15 @@ object Basic {
         case Left(e) => Left(e)
         case Right(a) => f(a)
       }
+
     def orElse[EE >: E, AA >: A](b: => Either[EE, AA]): Either[EE, AA] =
       this match {
         case Left(_) => b
         case Right(a) => Right(a)
       }
+
     def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C):
-      Either[EE, C] = for { a <- this; b1 <- b } yield f(a,b1)
+    Either[EE, C] = for {a <- this; b1 <- b} yield f(a, b1)
   }
+
 }

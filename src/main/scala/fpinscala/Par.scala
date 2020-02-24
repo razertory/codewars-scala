@@ -12,12 +12,15 @@ object Par {
 
   private case class UnitFuture[A](get: A) extends Future[A] {
     def isDone = true
+
     def get(timeout: Long, units: TimeUnit) = get
+
     def isCancelled = false
+
     def cancel(evenIfRunning: Boolean): Boolean = false
   }
 
-  def map2[A,B,C](a: Par[A], b: Par[B])(f: (A,B) => C): Par[C] = // `map2` doesn't evaluate the call to `f` in a separate logical thread, in accord with our design choice of having `fork` be the sole function in the API for controlling parallelism. We can always do `fork(map2(a,b)(f))` if we want the evaluation of `f` to occur in a separate thread.
+  def map2[A, B, C](a: Par[A], b: Par[B])(f: (A, B) => C): Par[C] = // `map2` doesn't evaluate the call to `f` in a separate logical thread, in accord with our design choice of having `fork` be the sole function in the API for controlling parallelism. We can always do `fork(map2(a,b)(f))` if we want the evaluation of `f` to occur in a separate thread.
     (es: ExecutorService) => {
       val af = a(es)
       val bf = b(es)
@@ -31,11 +34,11 @@ object Par {
 
   def lazyUnit[A](a: => A): Par[A] = fork(unit(a))
 
-  def asyncF[A,B](f: A => B): A => Par[B] =
+  def asyncF[A, B](f: A => B): A => Par[B] =
     a => lazyUnit(f(a))
 
-  def map[A,B](pa: Par[A])(f: A => B): Par[B] =
-    map2(pa, unit(()))((a,_) => f(a))
+  def map[A, B](pa: Par[A])(f: A => B): Par[B] =
+    map2(pa, unit(()))((a, _) => f(a))
 
   def equal[A](e: ExecutorService)(p: Par[A], p2: Par[A]): Boolean =
     p(e).get == p2(e).get
@@ -57,20 +60,20 @@ object Par {
   def choiceViaChoiceN[A](a: Par[Boolean])(ifTrue: Par[A], ifFalse: Par[A]): Par[A] =
     choiceN(map(a)(b => if (b) 0 else 1))(List(ifTrue, ifFalse))
 
-  def choiceMap[K,V](key: Par[K])(choices: Map[K,Par[V]]): Par[V] =
+  def choiceMap[K, V](key: Par[K])(choices: Map[K, Par[V]]): Par[V] =
     es => {
       val k = run(es)(key).get
       run(es)(choices(k))
     }
 
-  def chooser[A,B](p: Par[A])(choices: A => Par[B]): Par[B] =
+  def chooser[A, B](p: Par[A])(choices: A => Par[B]): Par[B] =
     es => {
       val k = run(es)(p).get
       run(es)(choices(k))
     }
 
   /* `chooser` is usually called `flatMap` or `bind`. */
-  def flatMap[A,B](p: Par[A])(choices: A => Par[B]): Par[B] =
+  def flatMap[A, B](p: Par[A])(choices: A => Par[B]): Par[B] =
     es => {
       val k = run(es)(p).get
       run(es)(choices(k))
@@ -89,8 +92,9 @@ object Par {
   def joinViaFlatMap[A](a: Par[Par[A]]): Par[A] =
     flatMap(a)(x => x)
 
-  def flatMapViaJoin[A,B](p: Par[A])(f: A => Par[B]): Par[B] =
+  def flatMapViaJoin[A, B](p: Par[A])(f: A => Par[B]): Par[B] =
     join(map(p)(f))
+
   /* Gives us infix syntax for `Par`. */
   implicit def toParOps[A](p: Par[A]): ParOps[A] = new ParOps(p)
 

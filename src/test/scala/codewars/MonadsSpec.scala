@@ -3,7 +3,8 @@ package codewars
 import org.scalatest._
 
 class MonadsSpec extends FlatSpec with Matchers {
-  import Monads._ 
+
+  import Monads._
 
   "Maybe" should "be a Functor" in {
     Maybe.maybeFunctor.fmap((x: Int) => x + 1)(None) shouldBe None
@@ -23,10 +24,10 @@ class MonadsSpec extends FlatSpec with Matchers {
 
   //   m shouldBe Some(5)
 
-    // val n: Maybe[Int] = for {
-    //   a <- None
-    //   b <- Some(1)
-    // } yield a + b
+  // val n: Maybe[Int] = for {
+  //   a <- None
+  //   b <- Some(1)
+  // } yield a + b
 
-    // n shouldBe None
+  // n shouldBe None
 }

@@ -6,11 +6,11 @@ object JosephusSurvivor {
     help(n, k) + 1
   }
 
-  def help(n: Int, m: Int) : Int = {
+  def help(n: Int, m: Int): Int = {
     n match {
       case 0 => -1
       case 1 => 0
-      case _ => (help(n -1, m) + m) % n
+      case _ => (help(n - 1, m) + m) % n
     }
   }
 }

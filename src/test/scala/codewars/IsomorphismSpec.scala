@@ -3,9 +3,11 @@ package codewars
 import org.scalatest._
 
 class IsomorphismSpec extends FlatSpec with Matchers {
+
   import Isomorphism._
 
   val bISO: ISO[Boolean, Boolean] = (!_, !_)
+
   def lrl[A, B](iso: ISO[A, B]): A => A =
     a => substR(iso)(substL(iso)(a))
 

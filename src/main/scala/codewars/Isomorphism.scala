@@ -3,17 +3,19 @@ package codewars
 // https://www.codewars.com/kata/isomorphism/scala
 object Isomorphism {
   /**
-  * The type [[Nothing]] has no value.
-  * So it is impossible to construct an instance of it.
-  * In this solution, wherever a situation arises where
-  * for types to check, you need a function that takes a [[Nothing]],
-  * you can use [[absurd]].
-  */
+   * The type [[Nothing]] has no value.
+   * So it is impossible to construct an instance of it.
+   * In this solution, wherever a situation arises where
+   * for types to check, you need a function that takes a [[Nothing]],
+   * you can use [[absurd]].
+   */
   // def absurd[R](n: Nothing): R = match n {
   //   case _ => ???
   // }
 
-  def absurd[R]: Nothing => R = { case _ => ??? }
+  def absurd[R]: Nothing => R = {
+    case _ => ???
+  }
 
   // so, when are two type, `A` and `B`, considered equal?
   // a definition might be, it is possible to go from `A` to `B`,
@@ -32,7 +34,8 @@ object Isomorphism {
 
   // There can be more than one ISO a b
   def isoBool: ISO[Boolean, Boolean] = (identity, identity)
-  def isoBoolNot: ISO[Boolean, Boolean] = (! _, ! _)
+
+  def isoBoolNot: ISO[Boolean, Boolean] = (!_, !_)
 
   // isomorphism is reflexive
   def refl[A]: ISO[A, A] = (identity, identity)
@@ -50,7 +53,11 @@ object Isomorphism {
   // We can combine isomorphism:
   def isoTuple[A, B, C, D]: (ISO[A, B], ISO[C, D]) => ISO[(A, C), (B, D)] = {
     case ((ab, ba), (cd, dc)) => {
-      ({ case (a, c) => (ab(a), cd(c)) }, { case (b, d) => (ba(b), dc(d)) })
+      ( {
+        case (a, c) => (ab(a), cd(c))
+      }, {
+        case (b, d) => (ba(b), dc(d))
+      })
     }
   }
 
@@ -68,15 +75,13 @@ object Isomorphism {
 
   def isoEither[A, B, C, D]: (ISO[A, B], ISO[C, D]) => ISO[Either[A, C], Either[B, D]] = {
     case ((ab, ba), (cd, dc)) => {
-      (
-        {
-          case Left(a) => Left(ab(a))
-          case Right(c) => Right(cd(c))
-        },
-        {
-          case Left(b) => Left(ba(b))
-          case Right(d) => Right(dc(d))
-        } 
+      ( {
+        case Left(a) => Left(ab(a))
+        case Right(c) => Right(cd(c))
+      }, {
+        case Left(b) => Left(ba(b))
+        case Right(d) => Right(dc(d))
+      }
       )
     }
   }
@@ -102,6 +107,7 @@ object Isomorphism {
       )
     }
   }
+
   // Remember, for all valid ISO, converting and converting back
   // Is the same as the original value.
   // You need this to prove some case are impossible.
@@ -110,18 +116,17 @@ object Isomorphism {
   // isoUnEither[A, B, C, D]: (ISO[Either[A, B], Either[C, D]], ISO[A, C]) => ISO[B, D]
   // Note that we have
   def isoEU: ISO[Either[List[Unit], Unit], Either[List[Unit], Nothing]] = {
-    (
-      {
-        case Left(xs) => Left(() :: xs)
-        case _ => Left(Nil)
-      },
-      {
-        case Left(Nil) => Right(Unit)
-        case Left(_ :: xs) => Left(xs)
-        case Right(void) => absurd(void)
-      }
+    ( {
+      case Left(xs) => Left(() :: xs)
+      case _ => Left(Nil)
+    }, {
+      case Left(Nil) => Right(Unit)
+      case Left(_ :: xs) => Left(xs)
+      case Right(void) => absurd(void)
+    }
     )
   }
+
   // where Unit, has 1 value, (the value is also called Unit), and Void has 0 values.
   // If we have isoUnEither,
   // We have ISO[Unit, Nothing] by calling isoUnEither isoEU

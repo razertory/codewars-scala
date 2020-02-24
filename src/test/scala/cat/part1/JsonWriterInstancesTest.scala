@@ -3,6 +3,7 @@ package cat.part1
 import org.scalatest._
 
 class JsonWriterInstancesTest extends FlatSpec with Matchers {
+
   import JsonWriterInstances._
 
   val person = Person("razertory", "razertory@163.com")
@@ -15,12 +16,12 @@ class JsonWriterInstancesTest extends FlatSpec with Matchers {
     )
   )
 
-  "ObjectToJson" should("return JsonObject") in {
+  "ObjectToJson" should ("return JsonObject") in {
     Json.toJson(person).shouldBe(expect)
     person.toJson.shouldBe(expect)
   }
 
-  "StringToJson" should("return JsonObject") in {
+  "StringToJson" should ("return JsonObject") in {
     println(Json.toJson(personStr))
   }
 }

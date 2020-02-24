@@ -5,11 +5,11 @@ import org.scalatest.FunSuite
 class ConcurrentTest extends FunSuite {
 
   test("testGetResultDependent") {
-      Concurrent.getResultDependent
+    Concurrent.getResultDependent
   }
 
   test("testGetResultIndependent") {
-      Concurrent.getResultIndependent
+    Concurrent.getResultIndependent
   }
 
   test("testGetResultParallel") {
